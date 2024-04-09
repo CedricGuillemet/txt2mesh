@@ -1,6 +1,7 @@
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { WebGPUEngine } from "@babylonjs/core/Engines/webgpuEngine";
 import { getSceneModule } from "./createScene";
+import { client } from "@gradio/client";
 
 export const babylonInit = async (): Promise<void> => {
     const createSceneModule = getSceneModule();
@@ -29,6 +30,14 @@ export const babylonInit = async (): Promise<void> => {
     } else {
         engine = new Engine(canvas, true);
     }
+
+    const app = await client("hansyan/perflow-triposr");
+    const result = await app.predict("/generate", [		
+                    "a police dog", // prompt
+                    "42", // seed
+        ]);
+
+    console.log(result.data);
 
     // Create the scene
     const scene = await createSceneModule.createScene(engine, canvas);
